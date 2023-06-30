@@ -1,7 +1,8 @@
-import mongoose from "mongoose";
-import app from "./app";
-import config from "./config";
-const port: number = 3000;
+/* eslint-disable no-console */
+import mongoose from 'mongoose';
+import app from './app';
+import config from './config';
+// const port: number = 3000;
 
 async function main() {
   try {
@@ -9,9 +10,9 @@ async function main() {
     app.listen(config.port, () => {
       console.log(`Assignement 3 listening on port ${config.port}`);
     });
-    console.log("Database Connected Successfully");
+    console.log('Database Connected Successfully');
   } catch (error) {
-    console.log("Database Error", error);
+    console.log('Database Error', error);
   }
 }
 
