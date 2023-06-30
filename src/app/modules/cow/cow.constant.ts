@@ -10,3 +10,11 @@ export const locations = [
 ];
 
 export const categories = ['Dairy', 'Beef', 'Dual Purpose'];
+export const cowFilterableFields = [
+  'searchTerm',
+  'location',
+  'breed',
+  'category',
+];
+
+export const cowSearchableFields = ['name', 'age', 'price', 'category'];

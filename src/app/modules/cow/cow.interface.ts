@@ -18,8 +18,22 @@ export type ICow = {
   breed: string;
   weigth: number;
   lebel: string;
-  catagory: 'Dairy' | 'Beef' | 'Dual Purpose';
+  category: 'Dairy' | 'Beef' | 'Dual Purpose';
   seller?: Types.ObjectId | IUser;
 };
 
 export type CowModel = Model<ICow, Record<string, unknown>>;
+
+// export const cowFilterableFields = [
+//   'searchTerm',
+//   'location',
+//   'breed',
+//   'category',
+// ];
+
+export type ICowFilters = {
+  searchTerm?: string;
+  location?: string;
+  breed?: string;
+  category?: string;
+};
