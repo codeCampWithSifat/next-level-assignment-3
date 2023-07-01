@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import ApiError from '../../../Errors/ApiError';
-import { IUser, IUserFilterableFields } from './users.interface';
+import { IUser } from './users.interface';
 import { User } from './users.model';
 import { IPaginationOptions } from '../../../interface/pagination';
 import { paginationHelpers } from '../../../helpers/paginationHelpers';
 import { SortOrder } from 'mongoose';
 import { IGenericResponse } from '../../../interface/common';
-import { userSearchableFields } from './users.constant';
-
 const createUser = async (payload: IUser): Promise<IUser | null> => {
   const result = await User.create(payload);
   if (!result) {
@@ -18,35 +16,64 @@ const createUser = async (payload: IUser): Promise<IUser | null> => {
   return result;
 };
 
+// const getAllUsers = async (
+//   paginationOptions: IPaginationOptions,
+//    filters: IUserFilterableFields
+// ): Promise<IGenericResponse<IUser[]>> => {
+//   const { page, limit, skip, sortBy, sortOrder } =
+//     paginationHelpers.calculatePagination(paginationOptions);
+
+//   const { searchTerm, ...filtersData } = filters;
+
+//   const andConditions = [];
+
+//   if (searchTerm) {
+//     andConditions.push({
+//       $or: userSearchableFields.map(field => ({
+//         [field]: {
+//           $regex: searchTerm,
+//           $options: 'i',
+//         },
+//       })),
+//     });
+//   }
+
+//   if (Object.keys(filtersData).length) {
+//     andConditions.push({
+//       $and: Object.entries(filtersData).map(([field, value]) => ({
+//         [field]: value,
+//       })),
+//     });
+//   }
+
+//   const sortConditions: { [key: string]: SortOrder } = {};
+
+//   if (sortBy && sortOrder) {
+//     sortConditions[sortBy] = sortOrder;
+//   }
+
+//   const whereConditions =
+//     andConditions.length > 0 ? { $and: andConditions } : {};
+//   const result = await User.find(whereConditions)
+//     .sort(sortConditions)
+//     .skip(skip)
+//     .limit(limit);
+//   const total = await User.countDocuments(whereConditions);
+//   return {
+//     meta: {
+//       page,
+//       limit,
+//       total,
+//     },
+//     data: result,
+//   };
+// };
+
 const getAllUsers = async (
-  paginationOptions: IPaginationOptions,
-  filters: IUserFilterableFields
+  paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<IUser[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
-
-  const { searchTerm, ...filtersData } = filters;
-
-  const andConditions = [];
-
-  if (searchTerm) {
-    andConditions.push({
-      $or: userSearchableFields.map(field => ({
-        [field]: {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      })),
-    });
-  }
-
-  if (Object.keys(filtersData).length) {
-    andConditions.push({
-      $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
-      })),
-    });
-  }
 
   const sortConditions: { [key: string]: SortOrder } = {};
 
@@ -54,13 +81,8 @@ const getAllUsers = async (
     sortConditions[sortBy] = sortOrder;
   }
 
-  const whereConditions =
-    andConditions.length > 0 ? { $and: andConditions } : {};
-  const result = await User.find(whereConditions)
-    .sort(sortConditions)
-    .skip(skip)
-    .limit(limit);
-  const total = await User.countDocuments(whereConditions);
+  const result = await User.find().sort(sortConditions).skip(skip).limit(limit);
+  const total = await User.countDocuments();
   return {
     meta: {
       page,
@@ -70,7 +92,6 @@ const getAllUsers = async (
     data: result,
   };
 };
-
 const updateUser = async (
   id: string,
   payload: Partial<IUser>

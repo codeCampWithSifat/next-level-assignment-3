@@ -6,7 +6,6 @@ import { UserService } from './users.service';
 import { IUser } from './users.interface';
 import paginationPick from '../../../shared/paginationPick';
 import { paginationFields } from '../../../constants/pagination';
-import { userFilterableFields } from './users.constant';
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
   const { ...userData } = req.body;
@@ -20,20 +19,32 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+//   const paginationOptions = paginationPick(req.query, paginationFields);
+//   console.log(paginationOptions);
+//   // const filters = paginationPick(req.query, userFilterableFields);
+//   const result = await UserService.getAllUsers( paginationOptions);
+
+//   sendResponse<IUser[]>(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Students retrieved successfully !',
+//     meta: result.meta,
+//     data: result.data,
+//   });
+// });
+
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const paginationOptions = paginationPick(req.query, paginationFields);
-  const filters = paginationPick(req.query, userFilterableFields);
-  const result = await UserService.getAllUsers(filters, paginationOptions);
-
+  const result = await UserService.getAllUsers(paginationOptions);
   sendResponse<IUser[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Students retrieved successfully !',
+    message: 'Created User Successfully',
     meta: result.meta,
     data: result.data,
   });
 });
-
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await UserService.getSingleUser(id);

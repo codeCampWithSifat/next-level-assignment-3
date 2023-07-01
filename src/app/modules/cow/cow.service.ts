@@ -1,12 +1,11 @@
 import httpStatus from 'http-status';
 import ApiError from '../../../Errors/ApiError';
-import { ICow, ICowFilters } from './cow.interface';
+import { ICow } from './cow.interface';
 import { Cow } from './cow.model';
 import { IPaginationOptions } from '../../../interface/pagination';
 import { IGenericResponse } from '../../../interface/common';
 import { paginationHelpers } from '../../../helpers/paginationHelpers';
 import { SortOrder } from 'mongoose';
-import { cowSearchableFields } from './cow.constant';
 
 const createCow = async (payload: ICow): Promise<ICow | null> => {
   const cowData = await Cow.create(payload);
@@ -17,39 +16,17 @@ const createCow = async (payload: ICow): Promise<ICow | null> => {
 };
 
 const getAllCows = async (
-  paginationOptions: IPaginationOptions,
-  filters: ICowFilters
+  paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<ICow[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
-
-  const { searchTerm, ...filtersData } = filters;
-  const andConditions = [];
-
-  if (searchTerm) {
-    andConditions.push({
-      $or: cowSearchableFields.map(field => ({
-        [field]: {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      })),
-    });
-  }
-
-  if (Object.keys(filtersData).length) {
-    andConditions.push({
-      $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
-      })),
-    });
-  }
 
   const sortConditions: { [key: string]: SortOrder } = {};
 
   if (sortBy && sortOrder) {
     sortConditions[sortBy] = sortOrder;
   }
+
   const result = await Cow.find().sort(sortConditions).skip(skip).limit(limit);
   const total = await Cow.countDocuments();
 

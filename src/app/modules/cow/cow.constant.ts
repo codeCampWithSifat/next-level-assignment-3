@@ -17,4 +17,4 @@ export const cowFilterableFields = [
   'category',
 ];
 
-export const cowSearchableFields = ['name', 'age', 'price', 'category'];
+export const cowSearchableFields = ['category', 'location', 'breed'];
